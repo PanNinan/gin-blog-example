@@ -1,5 +1,5 @@
 ````markdown
-```plaintext
+
 gin-example/
 ├── conf
 │   └── app.ini
