@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"example.com/example/pkg/setting"
 	"fmt"
 	"log"
 	"os"
@@ -31,6 +32,9 @@ func init() {
 	filePath := getLogFileFullPath()
 	F = openLogFile(filePath)
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
+	if !setting.EnableLog {
+		logger.SetOutput(os.Stdout)
+	}
 }
 
 func Debug(v ...interface{}) {

@@ -14,6 +14,8 @@ var (
 	WriteTimeout time.Duration
 	PageSize     int
 	JwtSecret    string
+	EnableCron   bool
+	EnableLog    bool
 )
 
 func init() {
@@ -48,4 +50,6 @@ func LoadApp() {
 	}
 	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
 	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+	EnableCron = sec.Key("ENABLE_CRON").MustBool(false)
+	EnableLog = sec.Key("ENABLE_LOG").MustBool(false)
 }

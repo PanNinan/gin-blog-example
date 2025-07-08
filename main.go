@@ -2,9 +2,9 @@ package main
 
 import (
 	"example.com/example/pkg/setting"
+	"example.com/example/pkg/task"
 	"example.com/example/routers"
 	"fmt"
-	//_ "gorm.io/driver/mysql"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +18,9 @@ func main() {
 		ReadTimeout:    setting.ReadTimeout,
 		WriteTimeout:   setting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
+	}
+	if setting.EnableCron {
+		task.Start()
 	}
 	log.Printf("Server started on %s", s.Addr)
 	log.Printf("pid: %d", os.Getpid())
