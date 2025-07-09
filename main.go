@@ -1,6 +1,8 @@
 package main
 
 import (
+	"example.com/example/models"
+	"example.com/example/pkg/logging"
 	"example.com/example/pkg/setting"
 	"example.com/example/pkg/task"
 	"example.com/example/routers"
@@ -11,15 +13,18 @@ import (
 )
 
 func main() {
+	setting.SetUp()
+	models.Setup()
+	logging.SetUp()
 	router := routers.InitRouter()
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HTTPPort),
 		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
+		ReadTimeout:    setting.ServerSetting.ReadTimeout,
+		WriteTimeout:   setting.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-	if setting.EnableCron {
+	if setting.AppSetting.EnableCron {
 		task.Start()
 	}
 	log.Printf("Server started on %s", s.Addr)

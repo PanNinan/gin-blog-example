@@ -19,27 +19,28 @@ type Model struct {
 	ModifiedAt *time.Time `gorm:"type:timestamp" json:"modified_at"`
 }
 
-func init() {
-	var (
-		err                                                error
-		_, dbName, user, password, host, port, tablePrefix string
-	)
-	sec, err := setting.Cfg.GetSection("database")
+type Database struct {
+	Type        string
+	dbName      string
+	User        string
+	Password    string
+	Host        string
+	Port        string
+	TablePrefix string
+}
+
+var DBSetting = &Database{}
+
+func Setup() {
+	err := setting.Cfg.Section("database").MapTo(DBSetting)
 	if err != nil {
-		log.Fatal(2, "Fail to get section 'database': %v", err)
+		log.Fatalf("Cfg.MapTo DatabaseSetting err: %v", err)
 	}
-	_ = sec.Key("TYPE").String()
-	dbName = sec.Key("NAME").String()
-	user = sec.Key("USER").String()
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	port = sec.Key("PORT").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", user, password, host, port, dbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DBSetting.User, DBSetting.Password, DBSetting.Host, DBSetting.Port, DBSetting.dbName)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   tablePrefix, // 表前缀
-			SingularTable: true,        // 使用单数表名
+			TablePrefix:   DBSetting.TablePrefix, // 表前缀
+			SingularTable: true,                  // 使用单数表名
 		},
 		Logger: logger.Default.LogMode(logger.Info),
 		NowFunc: func() time.Time {
@@ -64,7 +65,7 @@ func closeDB() {
 		log.Fatalf("failed to get generic database object: %v", err)
 	}
 	sqlDB.SetMaxIdleConns(0)
-	if err := sqlDB.Close(); err != nil {
+	if err = sqlDB.Close(); err != nil {
 		log.Fatalf("failed to close database connection: %v", err)
 	}
 	*db = gorm.DB{}

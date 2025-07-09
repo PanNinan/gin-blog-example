@@ -28,11 +28,16 @@ const (
 	FATAL
 )
 
-func init() {
-	filePath := getLogFileFullPath()
-	F = openLogFile(filePath)
+func SetUp() {
+	var err error
+	filePath := getLogFilePath()
+	fileName := getLogFileName()
+	F, err = openLogFile(filePath, fileName)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	logger = log.New(F, DefaultPrefix, log.LstdFlags)
-	if !setting.EnableLog {
+	if !setting.AppSetting.EnableLog {
 		logger.SetOutput(os.Stdout)
 	}
 }
