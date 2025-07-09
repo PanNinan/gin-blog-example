@@ -10,7 +10,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
+	r.Use(gin.Logger(), gin.Recovery(), middleware.Translations())
 	gin.SetMode(setting.ServerSetting.RunMode)
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{
