@@ -21,7 +21,7 @@ type Model struct {
 
 type Database struct {
 	Type        string
-	dbName      string
+	Name        string
 	User        string
 	Password    string
 	Host        string
@@ -36,7 +36,7 @@ func Setup() {
 	if err != nil {
 		log.Fatalf("Cfg.MapTo DatabaseSetting err: %v", err)
 	}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DBSetting.User, DBSetting.Password, DBSetting.Host, DBSetting.Port, DBSetting.dbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DBSetting.User, DBSetting.Password, DBSetting.Host, DBSetting.Port, DBSetting.Name)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   DBSetting.TablePrefix, // 表前缀

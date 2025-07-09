@@ -4,12 +4,12 @@ import (
 	"example.com/example/models"
 	"example.com/example/pkg/e"
 	"example.com/example/pkg/logging"
+	"example.com/example/pkg/response"
 	"example.com/example/pkg/setting"
 	"example.com/example/util"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-	"net/http"
 )
 
 func GetTags(c *gin.Context) {
@@ -29,11 +29,7 @@ func GetTags(c *gin.Context) {
 	code := e.SUCCESS
 	data["lists"] = models.GetTags(util.GetPage(c), setting.AppSetting.PageSize, maps)
 	data["total"] = models.GetTotal(maps)
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	response.Result(code, data, e.GetMsg(code), c)
 }
 func AddTag(c *gin.Context) {
 	name := c.Query("name")
@@ -60,11 +56,7 @@ func AddTag(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": make(map[string]string),
-	})
+	response.Result(code, make(map[string]interface{}), e.GetMsg(code), c)
 }
 
 func EditTag(c *gin.Context) {
@@ -99,11 +91,7 @@ func EditTag(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": make(map[string]string),
-	})
+	response.Result(code, make(map[string]interface{}), e.GetMsg(code), c)
 }
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
@@ -120,9 +108,5 @@ func DeleteTag(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": make(map[string]string),
-	})
+	response.Result(code, make(map[string]interface{}), e.GetMsg(code), c)
 }

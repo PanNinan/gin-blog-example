@@ -4,6 +4,7 @@ import (
 	"example.com/example/models"
 	"example.com/example/pkg/e"
 	"example.com/example/pkg/logging"
+	"example.com/example/pkg/response"
 	"example.com/example/pkg/setting"
 	"example.com/example/util"
 	"github.com/astaxie/beego/validation"
@@ -73,12 +74,7 @@ func GetArticles(c *gin.Context) {
 			logging.Info(err.Key, err.Message)
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	response.Result(code, data, e.GetMsg(code), c)
 }
 
 func AddArticle(c *gin.Context) {
@@ -118,12 +114,7 @@ func AddArticle(c *gin.Context) {
 			logging.Info(err.Key, err.Message)
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": make(map[string]interface{}),
-	})
+	response.Result(code, make(map[string]interface{}), e.GetMsg(code), c)
 }
 
 func EditArticle(c *gin.Context) {
@@ -182,12 +173,7 @@ func EditArticle(c *gin.Context) {
 			logging.Info(err.Key, err.Message)
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": make(map[string]string),
-	})
+	response.Result(code, make(map[string]interface{}), e.GetMsg(code), c)
 }
 
 func DeleteArticle(c *gin.Context) {

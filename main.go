@@ -2,6 +2,7 @@ package main
 
 import (
 	"example.com/example/models"
+	"example.com/example/pkg/gredis"
 	"example.com/example/pkg/logging"
 	"example.com/example/pkg/setting"
 	"example.com/example/pkg/task"
@@ -16,6 +17,10 @@ func main() {
 	setting.SetUp()
 	models.Setup()
 	logging.SetUp()
+	err := gredis.Setup()
+	if err != nil {
+		log.Fatalf("gredis setup failed:%v", err)
+	}
 	router := routers.InitRouter()
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HTTPPort),
@@ -29,7 +34,7 @@ func main() {
 	}
 	log.Printf("Server started on %s", s.Addr)
 	log.Printf("pid: %d", os.Getpid())
-	err := s.ListenAndServe()
+	err = s.ListenAndServe()
 	if err != nil {
 		log.Fatalf("server run failed:%v", err)
 	}
